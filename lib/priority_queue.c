@@ -61,7 +61,7 @@ pqueue *pq_new(int size, has_higher_priority_fn *fn)
     REQUIRES(size > 0);
 
     pqueue *Q = malloc(sizeof(pqueue));
-    Q->array = calloc(size + 1, sizeof(void));
+    Q->array = calloc(size + 1, sizeof(elem));
     Q->fn = fn;
     Q->next = 1;
     Q->size = size + 1;
@@ -86,7 +86,6 @@ bool pq_full(pqueue *Q)
 //a = parent, b = child
 void swap_up(pqueue *Q, int a, int b)
 {
-    printf("swapping %p with %p", Q->array[b], Q->array[a]);
     elem tmp = Q->array[a];
     Q->array[a] = Q->array[b];
     Q->array[b] = tmp;

@@ -299,31 +299,28 @@ void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
         adjlist *L = graph_next_neighbor(N);
         if(!visited[L->vert])
         {
-            printf("adding vertex: %d",L->vert);
-            //printf("\tnext is: %p",L->next);
-            //printf("\tneighbors is: %p",N->nbors);
+            adjlist *L2 = N->nbors;
             pq_add(Q, (elem)L);
-            printf("\tnext is: %p",L->next);
-            printf("\tneighbor is: %p\n",N->nbors);
         }
     }
-    printf("done adding to pq intially\n");
-    //graph_free_neighbors(N);
+    graph_free_neighbors(N);
 
     while(!pq_empty(Q))
     {
-        printf("in q\n");
         adjlist *L = (adjlist *)pq_rem(Q);
-        graph_addedge(G2, L->start, L->vert, L->weight);
-        visited[L->vert] = true;
+        if(!visited[L->vert])
+        {
+            graph_addedge(G2, L->start, L->vert, L->weight);
+            visited[L->vert] = true;
+        }
 
-        neighbor *N = graph_get_neighbors(G, L->vert);
+        N = graph_get_neighbors(G, L->vert);
         while(graph_hasmore_neighbors(N))
         {
             adjlist *L2 = graph_next_neighbor(N);
             if(!visited[L2->vert])
             {
-                pq_add(Q, (elem)L);
+                pq_add(Q, (elem)L2);
             }
         }
         graph_free_neighbors(N);

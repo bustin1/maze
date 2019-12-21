@@ -7,7 +7,7 @@ int main()
 {
 
     graph_t G1 = graph_new(6);
-    graph_addedge(G1, 0, 1, 1);
+    graph_addedge(G1, 0, 1, 5);
     graph_addedge(G1, 1, 2, 3);
     graph_addedge(G1, 2, 3, 5);
     graph_addedge(G1, 3, 0, 3);
