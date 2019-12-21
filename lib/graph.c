@@ -90,3 +90,116 @@ graph* graph_new(int size)
     ENSURES(is_graph(G));
     return G;
 }
+
+bool graph_hasedge(graph *G, vertex v, vertex w)
+{
+    REQUIRES(is_graph(G));
+    return is_in_adjlist(G->adj[v], w);
+}
+
+void graph_addedge(graph *G, vertex v, vertex w, int weight)
+{
+    REQUIRES(is_vertex(G, v) && is_vertex(G, w));
+    REQUIRES(is_graph(G));
+
+    adjlist *L1 = malloc(sizeof(adjlist));
+    L1->start = v;
+    L1->vert = w;
+    L1->weight = weight;
+    L1->next = G->adj[v];
+    G->adj[v] = L1;
+
+    adjlist *L2 = malloc(sizeof(adjlist));
+    L2->start = w;
+    L2->vert = v;
+    L2->weight = weight;
+    L2->next = G->adj[w];
+    G->adj[w] = L2;
+
+    ENSURES(is_graph(G));
+    ENSURES(graph_hasedge(G, v, w));
+    ENSURES(graph_hasedge(G, w, v));
+}
+
+void graph_free(graph *G)
+{
+    REQUIRES(is_graph(G));
+    for(vertex v=0; v<G->size; v++)
+    {
+        adjlist *L1 = G->adj[v];
+        adjlist *L2 = G->adj[v];
+        while(L1 != NULL)
+        {
+            L2 = L1->next;
+            free(L1);
+            L1 = L2;
+        }
+    }
+    free(G->adj);
+    free(G);
+}
+
+void graph_print(graph *G)
+{
+    REQUIRES(is_graph(G));
+    for(vertex v=0; v<G->size; v++)
+    {
+        printf("%d: ",v);
+        adjlist *L = G->adj[v];
+        while(L != NULL)
+        {
+            if(L->next == NULL) printf("%d\n", L->vert);
+            else printf("%d, ", L->vert);
+        }
+    }
+    ENSURES(is_graph(G));
+}
+
+unsigned int graph_size(graph *G)
+{
+    REQUIRES(is_graph(G));
+    return G->size;
+}
+
+typedef struct neighbor_header neighbor;
+struct neighbor_header
+{
+    adjlist *nbors;
+}
+
+neighbor* graph_get_neighbors(graph *G, vertex)
+{
+    REQUIRES(is_graph(G));
+    neighbor *N = malloc(sizeof(neighbor));
+    N->nbors = G->adj[v];
+    return N;
+}
+
+bool graph_hasmore_neighbors(neighbor *N)
+{
+    return N != NULL;
+}
+
+adjlist* graph_next_neighbor(neighbor *N)
+{
+    REQUIRES(graph_hasmore_neighbors(N));
+    adjlist *L = N->nbors;
+    N->nbors = N->nbors->next;
+    return L;
+}
+
+void graph_free_neighbors(neighbor *N)
+{
+    REQUIRES(N != NULL);
+    free(N);
+}
+
+
+
+
+
+
+
+
+
+
