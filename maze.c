@@ -25,7 +25,7 @@ int main()
 
     printf("\n");
 
-    printf("testing completed.");
+    printf("testing completed. Now complete the graph");
 
     return 0;
 }
