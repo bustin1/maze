@@ -270,9 +270,73 @@ graph* vertex_centric(graph *G)
     free(visited);
 
     ENSURES(is_graph(G));
-    return found;
+    ENSURES(is_graph(G2));
+    return G2;
 }
 
+void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
+{
+    visited[start] = true;
+
+    pq_t Q = pq_new(G->size*(G->size-1)/2);
+
+    neighbors *N = graph_get_neighbors(G, start);
+    while(graph_hasmore_neighbors(N))
+    {
+        adjlist *L = graph_next_neighbor(N);
+        ASSERT(!visited[L->vert]);
+        pq_add(Q, (elem)L);
+    }
+    graph_free_neighbors(N);
+
+    while(!pq_empty(Q))
+    {
+        adjlist *L = (adjlist *)pq_rem(Q);
+        graph_addedge(G2, L->start, L->vert);
+        visited[L->vert] = true;
+
+        N = graph_get_neighbor(G, L->vert);
+        while(graph_hasmore_neighbors(N))
+        {
+            adjlist *L2 = graph_next_neighbor(N);
+            if(!visited[L2->vert])
+            {
+                pq_add(Q, (elem)L);
+            }
+        }
+        graph_free_neighbors(N);
+    }
+
+}
+            
+
+graph* prim(graph *G)
+{
+    REQUIRES(is_graph(G));
+
+    bool *visited = calloc(sizeof(bool), G->size);
+    graph *G2 = graph_new(G->size);
+    
+    int counter = 0;
+    vertex start = 0;
+    while(counter < G2->size)
+    {
+        prim_helper(G, G2, start, visited);
+        for(vertex v=0; v<G2->size; v++)
+        {
+            if(visited[v]) counter++;
+            else{
+                start = v;
+                break;
+            }
+        }
+    }
+    free(visited);
+
+    ENSURES(is_graph(G));
+    ENSURES(is_graph(G2));
+    return G2;
+}
 
 
 
