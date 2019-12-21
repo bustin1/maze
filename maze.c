@@ -25,6 +25,8 @@ int main()
 
     printf("\n");
 
+    printf("testing completed.");
+
     return 0;
 }
 
