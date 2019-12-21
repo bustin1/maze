@@ -11,9 +11,9 @@
 #define ENSURES(COND) assert(COND)
 
 #else
-#define ASSERT(COND) assert((void)0)
-#define REQUIRES(COND) assert((void)0)
-#define ENSURES(COND) assert((void)0)
+#define ASSERT(COND) ((void)0)
+#define REQUIRES(COND) ((void)0)
+#define ENSURES(COND) ((void)0)
 
 #endif
 
