@@ -170,8 +170,11 @@ struct neighbor_header
 neighbor* graph_get_neighbors(graph *G, vertex)
 {
     REQUIRES(is_graph(G));
+
     neighbor *N = malloc(sizeof(neighbor));
     N->nbors = G->adj[v];
+
+    ENSURES(is_graph(G));
     return N;
 }
 
@@ -193,6 +196,90 @@ void graph_free_neighbors(neighbor *N)
     REQUIRES(N != NULL);
     free(N);
 }
+
+bool dfs_search_helper(graph *G, vertex start, vertex target, bool *visited)
+{
+    if(start == target) return true;
+    visited[start] = true;
+
+    neighbor *N = graph_get_neighbors(G, start);
+    while(graph_hasmore_neighbors(N))
+    {
+        adjlist *L = graph_next_neighbor(N);
+        if(!visited[L->vert] && dfs_search_helper(G, L->vert, target, visited))
+        {
+            return true;
+        }
+    }
+    graph_free_neighbors(N);
+    return false;
+}
+
+bool dfs_search(graph *G, vertex start, vertex target)
+{
+    REQUIRES(is_vertex(start) && is_vertex(target));
+    REQUIRES(is_graph(G));
+
+    bool *visited = calloc(sizeof(bool), G->size);
+    bool found = dfs_search_helper(G, start, target, visited);
+    free(visited);
+
+    ENSURES(is_graph(G));
+    return found;
+}
+
+void vertex_centric_helper(graph *G, graph *G2, vertex start, bool *visited)
+{
+    visited[start] = true;
+
+    neighbors *N = graph_get_neighbors(G, start);
+    while(graph_hasmore_neighbors(N))
+    {
+        adjlist *L = graph_next_neighbor(N);
+        if(!visited[L->vert])
+        {
+            graph_addedge(G2, start, L->vert);
+            vertex_centric_helper(G, G2, L->vert, visited);
+        }
+    }
+    graph_free_neighbors(N);
+}
+            
+
+graph* vertex_centric(graph *G)
+{
+    REQUIRES(is_graph(G));
+
+    bool *visited = calloc(sizeof(bool), G->size);
+    graph *G2 = graph_new(G->size);
+    
+    int counter = 0;
+    vertex start = 0;
+    while(counter < G2->size)
+    {
+        vertex_centric_helper(G, G2, start, visited);
+        for(vertex v=0; v<G2->size; v++)
+        {
+            if(visited[v]) counter++;
+            else{
+                start = v;
+                break;
+            }
+        }
+    }
+    free(visited);
+
+    ENSURES(is_graph(G));
+    return found;
+}
+
+
+
+
+
+
+
+
 
 
 
