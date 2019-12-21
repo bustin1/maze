@@ -1,11 +1,14 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
-#include <limits.h>
+#include "graph.h"
+#include "contracts.h"
+#include "priority_queue.h"
 
 
 typedef unsigned int vertex;
-typedef struct adjlist_header adjlist
-struct adjlist_header
+typedef struct adjacency_list_header adjlist;
+struct adjacency_list_header
 {
     vertex start;
     vertex vert;
@@ -57,10 +60,10 @@ bool is_adjlist(graph *G, adjlist *L, vertex v)
     {
         if(!is_vertex(G, L->vert)) return false;
         if(!is_vertex(G, L->start)) return false;
-        if(L->start != v) return false//start edge is always v
+        if(L->start != v) return false;//start edge is always v
         if(L->vert == v) return false;//no self-edges
-        if(!is_in_adjlist(G->adj[v], L->vert) return false//every edge goes into each node
-        if(is_in_adjlist(L->next, v)) return false;//no dupes
+        if(!is_in_adjlist(G->adj[v], L->vert)) return false;//every edge goes into each node
+        if(is_in_adjlist(L->next, L->vert)) return false;//no dupes
         L = L->next;
     }
     return true;
@@ -85,7 +88,7 @@ graph* graph_new(int size)
 
     graph *G = malloc(sizeof(graph));
     G->size = size;
-    G->adj = calloc(sizeof(adj *), size);
+    G->adj = calloc(sizeof(adjlist *), size);
 
     ENSURES(is_graph(G));
     return G;
@@ -150,6 +153,7 @@ void graph_print(graph *G)
         {
             if(L->next == NULL) printf("%d\n", L->vert);
             else printf("%d, ", L->vert);
+            L = L->next;
         }
     }
     ENSURES(is_graph(G));
@@ -165,9 +169,9 @@ typedef struct neighbor_header neighbor;
 struct neighbor_header
 {
     adjlist *nbors;
-}
+};
 
-neighbor* graph_get_neighbors(graph *G, vertex)
+neighbor* graph_get_neighbors(graph *G, vertex v)
 {
     REQUIRES(is_graph(G));
 
@@ -180,7 +184,9 @@ neighbor* graph_get_neighbors(graph *G, vertex)
 
 bool graph_hasmore_neighbors(neighbor *N)
 {
-    return N != NULL;
+    REQUIRES(N != NULL);
+    //if(N->nbors != NULL) printf("%p ", N->nbors);
+    return N->nbors != NULL;
 }
 
 adjlist* graph_next_neighbor(neighbor *N)
@@ -188,6 +194,7 @@ adjlist* graph_next_neighbor(neighbor *N)
     REQUIRES(graph_hasmore_neighbors(N));
     adjlist *L = N->nbors;
     N->nbors = N->nbors->next;
+    //if(N->nbors == NULL) printf("%p ", N->nbors);
     return L;
 }
 
@@ -217,7 +224,7 @@ bool dfs_search_helper(graph *G, vertex start, vertex target, bool *visited)
 
 bool dfs_search(graph *G, vertex start, vertex target)
 {
-    REQUIRES(is_vertex(start) && is_vertex(target));
+    REQUIRES(is_vertex(G, start) && is_vertex(G, target));
     REQUIRES(is_graph(G));
 
     bool *visited = calloc(sizeof(bool), G->size);
@@ -232,13 +239,13 @@ void vertex_centric_helper(graph *G, graph *G2, vertex start, bool *visited)
 {
     visited[start] = true;
 
-    neighbors *N = graph_get_neighbors(G, start);
+    neighbor *N = graph_get_neighbors(G, start);
     while(graph_hasmore_neighbors(N))
     {
         adjlist *L = graph_next_neighbor(N);
         if(!visited[L->vert])
         {
-            graph_addedge(G2, start, L->vert);
+            graph_addedge(G2, start, L->vert, L->weight);
             vertex_centric_helper(G, G2, L->vert, visited);
         }
     }
@@ -274,28 +281,43 @@ graph* vertex_centric(graph *G)
     return G2;
 }
 
+bool higher_prior(elem e1, elem e2)
+{
+    REQUIRES(e1 != NULL && e2 != NULL);
+    return ((adjlist*)e1)->weight < ((adjlist*)e2)->weight;
+}
+
 void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
 {
     visited[start] = true;
 
-    pq_t Q = pq_new(G->size*(G->size-1)/2);
+    pq_t Q = pq_new(G->size*(G->size-1)/2, &higher_prior);
 
-    neighbors *N = graph_get_neighbors(G, start);
+    neighbor *N = graph_get_neighbors(G, start);
     while(graph_hasmore_neighbors(N))
     {
         adjlist *L = graph_next_neighbor(N);
-        ASSERT(!visited[L->vert]);
-        pq_add(Q, (elem)L);
+        if(!visited[L->vert])
+        {
+            printf("adding vertex: %d",L->vert);
+            //printf("\tnext is: %p",L->next);
+            //printf("\tneighbors is: %p",N->nbors);
+            pq_add(Q, (elem)L);
+            printf("\tnext is: %p",L->next);
+            printf("\tneighbor is: %p\n",N->nbors);
+        }
     }
-    graph_free_neighbors(N);
+    printf("done adding to pq intially\n");
+    //graph_free_neighbors(N);
 
     while(!pq_empty(Q))
     {
+        printf("in q\n");
         adjlist *L = (adjlist *)pq_rem(Q);
-        graph_addedge(G2, L->start, L->vert);
+        graph_addedge(G2, L->start, L->vert, L->weight);
         visited[L->vert] = true;
 
-        N = graph_get_neighbor(G, L->vert);
+        neighbor *N = graph_get_neighbors(G, L->vert);
         while(graph_hasmore_neighbors(N))
         {
             adjlist *L2 = graph_next_neighbor(N);
@@ -306,6 +328,7 @@ void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
         }
         graph_free_neighbors(N);
     }
+    pq_free(Q);
 
 }
             

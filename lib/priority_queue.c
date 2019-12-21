@@ -86,6 +86,7 @@ bool pq_full(pqueue *Q)
 //a = parent, b = child
 void swap_up(pqueue *Q, int a, int b)
 {
+    printf("swapping %p with %p", Q->array[b], Q->array[a]);
     elem tmp = Q->array[a];
     Q->array[a] = Q->array[b];
     Q->array[b] = tmp;

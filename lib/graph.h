@@ -8,7 +8,7 @@ typedef unsigned int vertex;
 
 graph_t graph_new(int size);                                //O(1)
 bool graph_hasedge(graph_t G, vertex v, vertex w);          //O(min(v,e))
-void graph_addedge(graph_t G, vertex v, vertex w);          //O(1)
+void graph_addedge(graph_t G, vertex v, vertex w, int weight);          //O(1)
 //void graph_addedge_weight(graph_t G, vertex v, vertex w, unsigned int weight);          //O(1)
 void graph_free(graph_t G);                                 //O(e+v)
 //graph_t graph_dense(int size);                              //O(v*v)
