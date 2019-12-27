@@ -125,17 +125,20 @@ void graph_addedge(graph *G, vertex v, vertex w, int weight)
     ENSURES(graph_hasedge(G, w, v));
 }
 
-graph* graph_dense_random_weight(int size)
+graph* graph_dense_random_weight(int size, int width, int length)
 {
     REQUIRES(size > 0);
 
     graph *G = graph_new(size);
     srand(time(0));
-    for(vertex v=0; v<size-1; v++)
+    printf("w: %d", width);
+    printf("l: %d", length);
+    for(vertex row=0; row<length-1; row++)
     {
-        for(vertex w=v+1; w<size; w++)
+        for(vertex col=0; col<width-1; col++)
         {
-            graph_addedge(G, v, w, rand());
+            graph_addedge(G, row*width+col, row*width+col+1, rand());
+            graph_addedge(G, row*width+col, (row+1)*width+col, rand());
         }
     }
     

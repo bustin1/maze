@@ -12,11 +12,8 @@ int largest_area_factor(int num, int root)
 }
 
 
-void printMaze(graph_t G)
+void printMaze(graph_t G, int width, int length)
 {
-    int root = (int)sqrt(graph_size(G));
-    int width = largest_area_factor(graph_size(G), root);
-    int length = graph_size(G) / width;
 
     for(int row=0; row<length; row++)
     {
@@ -45,8 +42,15 @@ void printMaze(graph_t G)
 
 int main()
 {
-    graph_t G = prim(graph_dense_random_weight(25));
-    printMaze(G);
+    printf("here\n");
+    /*
+    int num_of_vert = 25;
+    int root = (int)sqrt(num_of_vert);
+    int width = largest_area_factor(num_of_vert, root);
+    int length = num_of_vert / width;
+    graph_t G = prim(graph_dense_random_weight(num_of_vert, width, length));
+    printMaze(G, width, length);
+    */
 
     return 0;
 }

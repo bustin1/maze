@@ -11,7 +11,7 @@ bool graph_hasedge(graph_t G, vertex v, vertex w);          //O(min(v,e))
 void graph_addedge(graph_t G, vertex v, vertex w, int weight);          //O(1)
 //void graph_addedge_weight(graph_t G, vertex v, vertex w, unsigned int weight);          //O(1)
 void graph_free(graph_t G);                                 //O(e+v)
-graph_t graph_dense_random_weight(int size);                              //O(v*v)
+graph_t graph_dense_random_weight(int size, int w, int h);                              //O(v*v)
 void graph_print(graph_t G);                                //O(e+v)
 unsigned int graph_size(graph_t G);                         //O(1)
 
