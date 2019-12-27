@@ -1,30 +1,52 @@
-#include "lib/graph.h"
 #include <stdio.h>
-#include <time.h>
+#include <math.h>
+#include "lib/graph.h"
 
+int largest_area_factor(int num, int root)
+{
+    for(int i=root; i>1; i--)
+    {
+        if(num%i == 0) return i;
+    }
+    return 1;
+}
+
+
+void printMaze(graph_t G)
+{
+    int root = (int)sqrt(graph_size(G));
+    int width = largest_area_factor(graph_size(G), root);
+    int length = graph_size(G) / width;
+
+    for(int row=0; row<length; row++)
+    {
+        for(int col=0; col<width; col++)
+        {
+            printf("O");
+            if(graph_hasedge(G, row*width+col, row*width+col + 1) && col != width - 1) printf("---");
+            else printf("   ");
+        }
+        printf("\n");
+
+        if(row != length - 1)
+        {
+            for(int col=0; col<width; col++)
+            {
+                if(graph_hasedge(G, row*width+col, (row+1)*(width)+col)) printf("|");
+                else printf(" ");
+                if(col != width-1) printf("   ");
+
+            }
+            printf("\n");
+        }
+    }
+
+}
 
 int main()
 {
-
-    graph_t G1 = graph_new(6);
-    graph_addedge(G1, 0, 1, 5);
-    graph_addedge(G1, 1, 2, 3);
-    graph_addedge(G1, 2, 3, 5);
-    graph_addedge(G1, 3, 0, 3);
-    graph_addedge(G1, 3, 4, 4);
-    graph_addedge(G1, 2, 4, 6);
-    graph_addedge(G1, 0, 4, 7);
-    graph_addedge(G1, 0, 5, 10);
-    graph_print(G1);
-
-    graph_t G2 = prim(G1);
-    graph_print(G2);
-    graph_free(G1);
-    graph_free(G2);
-
-    printf("\n");
-
-    printf("testing completed. Now complete the graph\n");
+    graph_t G = prim(graph_dense_random_weight(25));
+    printMaze(G);
 
     return 0;
 }

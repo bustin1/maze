@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 #include "graph.h"
 #include "contracts.h"
 #include "priority_queue.h"
@@ -122,6 +123,25 @@ void graph_addedge(graph *G, vertex v, vertex w, int weight)
     ENSURES(is_graph(G));
     ENSURES(graph_hasedge(G, v, w));
     ENSURES(graph_hasedge(G, w, v));
+}
+
+graph* graph_dense_random_weight(int size)
+{
+    REQUIRES(size > 0);
+
+    graph *G = graph_new(size);
+    srand(time(0));
+    for(vertex v=0; v<size-1; v++)
+    {
+        for(vertex w=v+1; w<size; w++)
+        {
+            graph_addedge(G, v, w, rand());
+        }
+    }
+    
+    ENSURES(is_graph(G));
+    return G;
+    
 }
 
 void graph_free(graph *G)
@@ -291,7 +311,7 @@ void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
 {
     visited[start] = true;
 
-    pq_t Q = pq_new(G->size*(G->size-1)/2, &higher_prior);
+    pq_t Q = pq_new(G->size*(G->size), &higher_prior);
 
     neighbor *N = graph_get_neighbors(G, start);
     while(graph_hasmore_neighbors(N))
