@@ -131,16 +131,16 @@ graph* graph_dense_random_weight(int size, int width, int length)
 
     graph *G = graph_new(size);
     srand(time(0));
-    printf("w: %d", width);
-    printf("l: %d", length);
-    for(vertex row=0; row<length-1; row++)
+    for(vertex row=0; row<length; row++)
     {
         for(vertex col=0; col<width-1; col++)
         {
             graph_addedge(G, row*width+col, row*width+col+1, rand());
-            graph_addedge(G, row*width+col, (row+1)*width+col, rand());
+            if(row != length-1) graph_addedge(G, row*width+col, (row+1)*width+col, rand());
         }
     }
+    //graph_addedge(G, width*length-2, width*length-1, rand());
+    graph_addedge(G, width*(length-1)-1, width*length-1, rand());
     
     ENSURES(is_graph(G));
     return G;
