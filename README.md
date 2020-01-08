@@ -1,8 +1,9 @@
 # Maze
 ![maze](maze.png)
-
+Top figure is the spanning tree\
+Bottom figure is the maze genernated\
 # Overview: 
-Randomly generates mazes based on a minimum spanning tree, whose weights are randomly generated.\ 
+Randomly generates mazes based on a minimum spanning tree, whose weights are randomly generated.\
 Prints maze on console rather than SDL, or openGL, no GUI.
 ```
 Compile(w/ debug): gcc -DDEBUG -o maze lib/*.c maze.c -lm
