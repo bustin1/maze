@@ -1,14 +1,13 @@
-# maze
-Decemeber 27, 2019
-@Justin Hsu SCS class of 2023
-Contact: justinhs@andrew.cmu.edu
+# Maze
+![maze](maze.png)
 
-Overview: Randomly generates mazes based on a minimum spanning tree, whose weights are randomly generated. Prints maze on console
-rather than SDL, or openGL, no GUI.
-
-Compile(w/ debug): gcc -DDEBUG -o maze lib/*.c maze.c
-
-Compile(w/o): gcc -o maze lib/*.c maze.c
+# Overview: 
+Randomly generates mazes based on a minimum spanning tree, whose weights are randomly generated.\ 
+Prints maze on console rather than SDL, or openGL, no GUI.
+```
+Compile(w/ debug): gcc -DDEBUG -o maze lib/*.c maze.c -lm
+Compile(w/o): gcc -o maze lib/*.c maze.c -lm
+```
 
 To change the size of the maze, change the variable num_of_vert(of spanning tree). I.E if set to 100, then spanning tree will
 be 10x10 => 11x11 maze. If set to a non-perfect square, then maze.c will find the closert factor to its square-root. I.E if 
