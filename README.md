@@ -6,8 +6,8 @@ Bottom figure is the maze genernated\
 Randomly generates mazes based on a minimum spanning tree, whose weights are randomly generated.\
 Prints maze on console rather than SDL, or openGL, no GUI.
 ```
-Compile(w/ debug): gcc -DDEBUG -o maze lib/*.c maze.c -lm
-Compile(w/o): gcc -o maze lib/*.c maze.c -lm
+Compile(w/ debug): make or make maze
+Compile(w/o debug): make maze-debug
 ```
 
 To change the size of the maze, change the variable num_of_vert(of spanning tree). I.E if set to 100, then spanning tree will
