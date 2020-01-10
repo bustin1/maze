@@ -7,8 +7,8 @@
 #include "priority_queue.h"
 
 
-typedef unsigned int vertex;
-typedef struct adjacency_list_header adjlist;
+//typedef unsigned int vertex;
+//typedef struct adjacency_list_header adjlist;
 struct adjacency_list_header
 {
     vertex start;
@@ -125,7 +125,7 @@ void graph_addedge(graph *G, vertex v, vertex w, int weight)
     ENSURES(graph_hasedge(G, w, v));
 }
 
-graph* graph_dense_random_weight(int size, int width, int length)
+graph* graph_dense_random_weight(int size, unsigned int width, unsigned int length)
 {
     REQUIRES(size > 0);
 
@@ -283,7 +283,7 @@ graph* vertex_centric(graph *G)
     bool *visited = calloc(sizeof(bool), G->size);
     graph *G2 = graph_new(G->size);
     
-    int counter = 0;
+    unsigned int counter = 0;
     vertex start = 0;
     while(counter < G2->size)
     {
@@ -322,7 +322,7 @@ void prim_helper(graph *G, graph *G2, vertex start, bool *visited)
         adjlist *L = graph_next_neighbor(N);
         if(!visited[L->vert])
         {
-            adjlist *L2 = N->nbors;
+            //adjlist *L2 = N->nbors;
             pq_add(Q, (elem)L);
         }
     }
@@ -360,7 +360,7 @@ graph* prim(graph *G)
     bool *visited = calloc(sizeof(bool), G->size);
     graph *G2 = graph_new(G->size);
     
-    int counter = 0;
+    unsigned int counter = 0;
     vertex start = 0;
     while(counter < G2->size)
     {

@@ -78,7 +78,8 @@ void printMaze(graph_t G, int width, int length)
 
 int main()
 {
-    int num_of_vert = 100;
+    printf("here\n");
+    int num_of_vert = 121;
     int root = (int)sqrt(num_of_vert);
     int length = largest_area_factor(num_of_vert, root);
     int width = num_of_vert / length;

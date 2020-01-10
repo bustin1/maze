@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 
-typedef void *elem;
+//typedef void *elem;
 typedef bool has_higher_priority_fn(elem, elem); 
 
 typedef struct priority_queue_header pqueue;
@@ -14,7 +14,7 @@ struct priority_queue_header
 {
     elem *array;
     unsigned int size;
-    int next;
+    unsigned int next;
     has_higher_priority_fn *fn;
 };
 
@@ -37,7 +37,7 @@ bool is_safe(pqueue *Q)
 //data structure invariant
 bool is_ordered(pqueue *Q)
 {
-    int child = 2;
+    unsigned int child = 2;
     while(child < Q->next)
     {
         if(!ok_above(Q,child)){
@@ -125,7 +125,7 @@ elem pq_rem(pqueue *Q)
     Q->array[1] = Q->array[Q->next];
 
     if(Q->next > 1){
-        int i = 1;
+        unsigned int i = 1;
         while(2*i < Q->next)
         {
             if(2*i + 1 < Q->next
