@@ -78,15 +78,19 @@ void printMaze(graph_t G, int width, int length)
 
 int main()
 {
-    printf("here\n");
+    //printf("here\n");
     int num_of_vert = 121;
     int root = (int)sqrt(num_of_vert);
     int length = largest_area_factor(num_of_vert, root);
     int width = num_of_vert / length;
-    graph_t G = prim(graph_dense_random_weight(num_of_vert, width, length));
+    graph_t G2 = graph_dense_random_weight(num_of_vert, width, length);
+    graph_t G = prim(G2);
     printTree(G, width, length);
     printf("\n\n");
     printMaze(G, width, length);
+
+    graph_free(G2);
+    graph_free(G);
 
     return 0;
 }
